@@ -26,7 +26,6 @@ import userRoute from "./routes/user.js";
 import chatRoute from "./routes/chat.js";
 import adminRoute from "./routes/admin.js";
 
-
 dotenv.config({
   path: "./.env",
 });
@@ -47,9 +46,6 @@ cloudinary.config({
 });
 
 const app = express();
-app.use(express.json());
-app.use(cookieParser());
-app.use(cors());
 const server = createServer(app);
 const io = new Server(server, {
   cors: corsOptions,
@@ -58,7 +54,9 @@ const io = new Server(server, {
 app.set("io", io);
 
 // Using Middlewares Here
-
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors(corsOptions));
 
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/chat", chatRoute);
@@ -144,6 +142,7 @@ io.on("connection", (socket) => {
 });
 
 app.use(errorMiddleware);
+
 server.listen(port, () => {
   console.log(`Server is running on port ${port} in ${envMode} Mode`);
 });
